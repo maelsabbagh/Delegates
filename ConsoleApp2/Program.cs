@@ -1,8 +1,11 @@
 ﻿using System.Linq.Expressions;
 using System.Runtime.Intrinsics.X86;
+using System.Security.Cryptography.X509Certificates;
+using static ConsoleApp2.Program;
 
 namespace ConsoleApp2
 {
+
     class Employee
     {
         public int Id { get; set; }
@@ -22,7 +25,6 @@ namespace ConsoleApp2
         public void processEmployee(Employee[] employees,string title, IsPass isPass)
         {
             Console.WriteLine($"{title}:\n");
-            
 
             foreach (var emp in employees)
             {
@@ -36,7 +38,7 @@ namespace ConsoleApp2
         }
     }
     internal class Program
-    {
+    {       
         static void Main(string[] args)
         {
             var emps = new Employee[]
@@ -55,7 +57,32 @@ namespace ConsoleApp2
             report.processEmployee(emps, "employees with total sales greater than or equal 60,000", (e) => e.TotalSales >= 60000);
             report.processEmployee(emps, "employees with total sales less than than 60,000", (e) => e.TotalSales < 60000);
             report.processEmployee(emps, "employees with total sales greater than 90,000", (e) => e.TotalSales > 90000);
+            /*
+             * Generic delegate
+             * 
+             * */
 
+            IEnumerable<int> numbers = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 100, 120, 140, 200 };
+            printData<int>(numbers, (n) => n < 100);
+            printData<int>(numbers, (n) => n > 100);
+            printData<int>(numbers, (n) => n%2==0);
+
+            IEnumerable<char> letters = new List<char>() { 'a', 'b', 'c', 'd', 'x', 'y', 'z' };
+            printData<char>(letters, (c) => c < 'x');
+            printData<char>(letters, (c) => c >= 'x');
+
+        }
+        public delegate bool customFilter<T>(T val);
+        public static void printData<T>(IEnumerable<T>data, customFilter<T> filter)
+        {
+            foreach(T val in data)
+            {
+                if(filter(val))
+                {
+                    Console.WriteLine(val);
+                }
+            }
+            Console.WriteLine("*********************************");
         }
     }
 }
